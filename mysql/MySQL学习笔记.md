@@ -1327,6 +1327,15 @@ WHERE degree BETWEEN low AND upp;
 
 ### 连接查询
 
+- 内连接
+INNER JOIN或者JOIN
+
+- 外连接
+1.左连接LEFT JOIN或者LEFT OUTER JOIN
+2.右连接RIGHT JOIN 或者RIGHT OUTER JOIN
+3.完全外连接FULL JOIN或者FULL OUTER JOIN
+
+
 准备用于测试连接查询的数据：
 
 ```mysql
@@ -1405,7 +1414,7 @@ SELECT * FROM person LEFT JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 ```
 
-#### 右外链接
+#### 右外连接
 
 完整显示右边的表 ( `card` ) ，左边的表如果符合条件就显示，不符合则补 `NULL` 。
 
