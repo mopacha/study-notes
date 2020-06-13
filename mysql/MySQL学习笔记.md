@@ -1331,9 +1331,9 @@ WHERE degree BETWEEN low AND upp;
 INNER JOIN或者JOIN
 
 - 外连接
-1.左连接LEFT JOIN或者LEFT OUTER JOIN
-2.右连接RIGHT JOIN 或者RIGHT OUTER JOIN
-3.完全外连接FULL JOIN或者FULL OUTER JOIN
+1. 左连接LEFT JOIN或者LEFT OUTER JOIN
+2. 右连接RIGHT JOIN 或者RIGHT OUTER JOIN
+3. 完全外连接FULL JOIN或者FULL OUTER JOIN
 
 
 准备用于测试连接查询的数据：
@@ -1431,7 +1431,7 @@ SELECT * FROM person RIGHT JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 ```
 
-#### 全外链接
+#### 全外连接
 
 完整显示两张表的全部数据。
 
