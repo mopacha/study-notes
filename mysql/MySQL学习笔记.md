@@ -4,7 +4,7 @@
 
 ```shell
 # 登录mysql
-$ mysql -u root -p12345612
+$ mysql -uroot -p12345612
 
 # 退出mysql数据库服务器
 exit;
@@ -34,19 +34,46 @@ create table pet (
     birth date,
     death date
 );
+注意事项:
+    1:var()与varchar()的区别在于var()是定常的,哪怕存储的字符串没有达到"()“中数字的上限,var()依然会占用空格来填充空间.
+    而varchar()则是不定长的,没有达到”()"中的上限则会自动去掉后面的空格;
+    2:性别不要用:sex 要用:gender 一个是性 一个是性别;
+    3:定义最后一个字段的时候不要加",";
+    4:上面的"VAR",“VARCHAR”,"DATE"可以用小写.不过最好用大写来表示区分关键字,若不然也许写到后面你自己都不知道这个词是数据库中的关键字还是你自己自定义的一些数据,同时一定要用英文的标点符号也必须半角输入
 
 -- 查看数据表结构
 -- describe pet;
 desc pet;
 
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| name    | varchar(20) | YES  |     | NULL    |       |
+| owner   | varchar(20) | YES  |     | NULL    |       |
+| specise | varchar(20) | YES  |     | NULL    |       |
+| sex     | char(1)     | YES  |     | NULL    |       |
+| brith   | date        | YES  |     | NULL    |       |
+| death   | date        | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+6 rows in set (0.02 sec)
+
+-- 插入数据
+insert into pet values('black','jack','dog','1','2020-05-29',null);
+
+还有一种写法：insert into pet(name,owner) values ('xx','cc');。代表我只在name和owner字段上面插入的一条,其他皆为NULL/默认值的数据
+
 -- 查询表
 select * from pet;
 
--- 插入数据
-insert into pet values ('puffball', 'Diane', 'hamster', 'f', '1990-03-30', NULL);
+ +-------+-------+---------+------+------------+-------+
+| name  | owner | specise | sex  | brith      | death |
++-------+-------+---------+------+------------+-------+
+| black | jack  | dog     | 1    | 2020-05-29 | NULL  |
++-------+-------+---------+------+------------+-------+
+2 rows in set (0.00 sec)
 
 -- 修改数据
-update pet SET name = 'squirrel' where owner = 'Diane';
+update pet set name = 'squirrel' where owner = 'jack';
 
 -- 删除数据
 delete from pet where name = 'squirrel';
@@ -1492,7 +1519,7 @@ select * from user;
 
 ```mysql
 -- 关闭自动提交
-SET AUTOCOMMIT = 0;
+set AUTOCOMMIT = 0;
 
 -- 查询自动提交状态
 select @@AUTOCOMMIT;
@@ -1564,7 +1591,7 @@ select * from user;
 >
 >    - 查看自动提交状态：`select @@AUTOCOMMIT` ；
 >
->    - 设置自动提交状态：`SET AUTOCOMMIT = 0` 。
+>    - 设置自动提交状态：`set AUTOCOMMIT = 0` 。
 >
 > 2. **手动提交**
 >
@@ -1714,7 +1741,7 @@ select @@TX_ISOLATION;
 
 ```mysql
 -- 设置系统隔离级别，LEVEL 后面表示要设置的隔离级别 (READ UNCOMMITTED)。
-SET GLOBAL TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+set GLOBAL TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
 -- 查询系统隔离级别，发现已经被修改。
 select @@GLOBAL.TRANSACTION_ISOLATION;
@@ -1746,8 +1773,8 @@ select * from user;
 -- 开启一个事务操作数据
 -- 假设小明在淘宝店买了一双800块钱的鞋子：
 START TRANSACTION;
-update user SET money = money - 800 where name = '小明';
-update user SET money = money + 800 where name = '淘宝店';
+update user set money = money - 800 where name = '小明';
+update user set money = money + 800 where name = '淘宝店';
 
 -- 然后淘宝店在另一方查询结果，发现钱已到账。
 select * from user;
@@ -1786,7 +1813,7 @@ select * from user;
 把隔离级别设置为 **READ COMMITTED** ：
 
 ```mysql
-SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;
+set GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;
 select @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
@@ -1800,8 +1827,8 @@ select @@GLOBAL.TRANSACTION_ISOLATION;
 ```mysql
 -- 正在操作数据事务（当前事务）
 START TRANSACTION;
-update user SET money = money - 800 where name = '小明';
-update user SET money = money + 800 where name = '淘宝店';
+update user set money = money - 800 where name = '小明';
+update user set money = money + 800 where name = '淘宝店';
 
 -- 虽然隔离级别被设置为了 READ COMMITTED，但在当前事务中，
 -- 它看到的仍然是数据表中临时改变数据，而不是真正提交过的数据。
@@ -1878,7 +1905,7 @@ select avg(money) from user;
 将隔离级别设置为 **REPEAtable READ ( 可被重复读取 )** :
 
 ```mysql
-SET GLOBAL TRANSACTION ISOLATION LEVEL REPEAtable READ;
+set GLOBAL TRANSACTION ISOLATION LEVEL REPEAtable READ;
 select @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
@@ -1934,7 +1961,7 @@ insert into user values (6, 'd', 1000);
 顾名思义，就是所有事务的**写入操作**全都是串行化的。什么意思？把隔离级别修改成 **SERIALIZABLE** :
 
 ```mysql
-SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+set GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 select @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
