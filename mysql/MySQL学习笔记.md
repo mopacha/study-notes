@@ -1,12 +1,12 @@
-# mysql学习笔记
+# MySQL学习笔记
 
-## 登录和退出mysql服务器
+## 登录和退出MySQL服务器
 
 ```shell
-# 登录mysql
+# 登录MySQL
 $ mysql -uroot -p12345612
 
-# 退出mysql数据库服务器
+# 退出MySQL数据库服务器
 exit;
 ```
 
@@ -17,7 +17,7 @@ exit;
 show databases;
 
 -- 创建数据库
-create database test;
+CREATE DATABASE test;
 
 -- 切换数据库
 use test;
@@ -26,14 +26,15 @@ use test;
 show tables;
 
 -- 创建数据表
-create table pet (
-    name varchar(20),
-    owner varchar(20),
-    species varchar(20),
+CREATE TABLE pet (
+    name VARCHAR(20),
+    owner VARCHAR(20),
+    species VARCHAR(20),
     sex CHAR(1),
-    birth date,
-    death date
+    birth DATE,
+    death DATE
 );
+
 注意事项:
     1:var()与varchar()的区别在于var()是定常的,哪怕存储的字符串没有达到"()“中数字的上限,var()依然会占用空格来填充空间.
     而varchar()则是不定长的,没有达到”()"中的上限则会自动去掉后面的空格;
@@ -57,29 +58,34 @@ desc pet;
 +---------+-------------+------+-----+---------+-------+
 6 rows in set (0.02 sec)
 
--- 插入数据
-insert into pet values('black','jack','dog','1','2020-05-29',null);
 
-还有一种写法：insert into pet(name,owner) values ('xx','cc');。代表我只在name和owner字段上面插入的一条,其他皆为NULL/默认值的数据
+-- 插入数据
+INSERT INTO pet VALUES('black','jack','dog','1','2020-05-29',null);
+
+NULL:代表的是空,表示该字段还没有数据.千万不要主动填写’NULL’,这代表你的字段有一个值叫做'null'.
+还有一种写法：INSERT INTO pet(name,owner) VALUES ('xx','cc');。代表我只在name和owner字段上面插入的一条,其他皆为NULL/默认值的数据
+
 
 -- 查询表
-select * from pet;
+SELECT * FROM pet;
 
- +-------+-------+---------+------+------------+-------+
++-------+-------+---------+------+------------+-------+
 | name  | owner | specise | sex  | brith      | death |
 +-------+-------+---------+------+------------+-------+
+| kk    | cc    | dog     | 1    | 1998-08-02 | NULL  |
 | black | jack  | dog     | 1    | 2020-05-29 | NULL  |
 +-------+-------+---------+------+------------+-------+
 2 rows in set (0.00 sec)
 
+
 -- 修改数据
-update pet set name = 'squirrel' where owner = 'jack';
+UPDATE pet SET name = 'squirrel' WHERE owner = 'Diane';
 
 -- 删除数据
-delete from pet where name = 'squirrel';
+DELETE FROM pet WHERE name = 'squirrel';
 
 -- 删除表
-drop table myorder;
+DROP TABLE myorder;
 ```
 
 ## 建表约束
@@ -89,53 +95,53 @@ drop table myorder;
 ```mysql
 -- 主键约束
 -- 使某个字段不重复且不得为空，确保表内所有数据的唯一性。
-create table user (
-    id int primary key,
-    name varchar(20)
+CREATE TABLE user (
+    id INT PRIMARY KEY,
+    name VARCHAR(20)
 );
 
 -- 联合主键
 -- 联合主键中的每个字段都不能为空，并且加起来不能和已设置的联合主键重复。
-create table user (
-    id int,
-    name varchar(20),
-    password varchar(20),
-    primary key(id, name)
+CREATE TABLE user (
+    id INT,
+    name VARCHAR(20),
+    password VARCHAR(20),
+    PRIMARY KEY(id, name)
 );
 
 -- 自增约束
 -- 自增约束的主键由系统自动递增分配。
-create table user (
-    id int primary key AUTO_inCREMENT,
-    name varchar(20)
+CREATE TABLE user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20)
 );
 
 -- 添加主键约束
 -- 如果忘记设置主键，还可以通过SQL语句设置（两种方式）：
-alter table user and primary key(id);
-alter table user modify id int primary key;
+ALTER TABLE user ADD PRIMARY KEY(id);
+ALTER TABLE user MODIFY id INT PRIMARY KEY;
 
 -- 删除主键
-alter table user drop primary key;
+ALTER TABLE user drop PRIMARY KEY;
 ```
 
 ### 唯一主键
 
 ```mysql
 -- 建表时创建唯一主键
-create table user (
-    id int,
-    name varchar(20),
-    unique(name)
+CREATE TABLE user (
+    id INT,
+    name VARCHAR(20),
+    UNIQUE(name)
 );
 
 -- 添加唯一主键
 -- 如果建表时没有设置唯一建，还可以通过SQL语句设置（两种方式）：
-alter table user and unique(name);
-alter table user modify name varchar(20) unique;
+ALTER TABLE user ADD UNIQUE(name);
+ALTER TABLE user MODIFY name VARCHAR(20) UNIQUE;
 
 -- 删除唯一主键
-alter table user drop inDEX name;
+ALTER TABLE user DROP INDEX name;
 ```
 
 ### 非空约束
@@ -143,13 +149,13 @@ alter table user drop inDEX name;
 ```mysql
 -- 建表时添加非空约束
 -- 约束某个字段不能为空
-create table user (
-    id int,
-    name varchar(20) not null
+CREATE TABLE user (
+    id INT,
+    name VARCHAR(20) NOT NULL
 );
 
 -- 移除非空约束
-alter table user modify name varchar(20);
+ALTER TABLE user MODIFY name VARCHAR(20);
 ```
 
 ### 默认约束
@@ -157,33 +163,33 @@ alter table user modify name varchar(20);
 ```mysql
 -- 建表时添加默认约束
 -- 约束某个字段的默认值
-create table user2 (
-    id int,
-    name varchar(20),
-    age int DEFAULT 10
+CREATE TABLE user2 (
+    id INT,
+    name VARCHAR(20),
+    age INT DEFAULT 10
 );
 
 -- 移除非空约束
-alter table user modify age int;
+ALTER TABLE user MODIFY age INT;
 ```
 
 ### 外键约束
 
 ```mysql
 -- 班级
-create table classes (
-    id int primary key,
-    name varchar(20)
+CREATE TABLE classes (
+    id INT PRIMARY KEY,
+    name VARCHAR(20)
 );
 
 -- 学生表
-create table students (
-    id int primary key,
-    name varchar(20),
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(20),
     -- 这里的 class_id 要和 classes 中的 id 字段相关联
-    class_id int,
+    class_id INT,
     -- 表示 class_id 的值必须来自于 classes 中的 id 字段值
-    foreign key(class_id) REFERENCES classes(id)
+    FOREIGN KEY(class_id) REFERENCES classes(id)
 );
 
 -- 1. 主表（父表）classes 中没有的数据值，在副表（子表）students 中，是不可以使用的；
@@ -204,12 +210,12 @@ create table students (
 
 ```mysql
 -- 订单表
-create table myorder (
-    product_id int,
-    customer_id int,
-    product_name varchar(20),
-    customer_name varchar(20),
-    primary key (product_id, customer_id)
+CREATE TABLE myorder (
+    product_id INT,
+    customer_id INT,
+    product_name VARCHAR(20),
+    customer_name VARCHAR(20),
+    PRIMARY KEY (product_id, customer_id)
 );
 ```
 
@@ -218,20 +224,20 @@ create table myorder (
 这就不满足第二范式：其他列都必须完全依赖于主键列！
 
 ```mysql
-create table myorder (
-    order_id int primary key,
-    product_id int,
-    customer_id int
+CREATE TABLE myorder (
+    order_id INT PRIMARY KEY,
+    product_id INT,
+    customer_id INT
 );
 
-create table product (
-    id int primary key,
-    name varchar(20)
+CREATE TABLE product (
+    id INT PRIMARY KEY,
+    name VARCHAR(20)
 );
 
-create table customer (
-    id int primary key,
-    name varchar(20)
+CREATE TABLE customer (
+    id INT PRIMARY KEY,
+    name VARCHAR(20)
 );
 ```
 
@@ -242,27 +248,27 @@ create table customer (
 在满足第二范式的前提下，除了主键列之外，其他列之间不能有传递依赖关系。
 
 ```mysql
-create table myorder (
-    order_id int primary key,
-    product_id int,
-    customer_id int,
-    customer_phone varchar(15)
+CREATE TABLE myorder (
+    order_id INT PRIMARY KEY,
+    product_id INT,
+    customer_id INT,
+    customer_phone VARCHAR(15)
 );
 ```
 
 表中的 `customer_phone` 有可能依赖于 `order_id` 、 `customer_id` 两列，也就不满足了第三范式的设计：其他列之间不能有传递依赖关系。
 
 ```mysql
-create table myorder (
-    order_id int primary key,
-    product_id int,
-    customer_id int
+CREATE TABLE myorder (
+    order_id INT PRIMARY KEY,
+    product_id INT,
+    customer_id INT
 );
 
-create table customer (
-    id int primary key,
-    name varchar(20),
-    phone varchar(15)
+CREATE TABLE customer (
+    id INT PRIMARY KEY,
+    name VARCHAR(20),
+    phone VARCHAR(15)
 );
 ```
 
@@ -274,140 +280,140 @@ create table customer (
 
 ```mysql
 -- 创建数据库
-create database select_test;
+CREATE DATABASE select_test;
 -- 切换数据库
 USE select_test;
 
 -- 创建学生表
-create table student (
-    no varchar(20) primary key,
-    name varchar(20) not null,
-    sex varchar(10) not null,
-    birthday date, -- 生日
-    class varchar(20) -- 所在班级
+CREATE TABLE student (
+    no VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    sex VARCHAR(10) NOT NULL,
+    birthday DATE, -- 生日
+    class VARCHAR(20) -- 所在班级
 );
 
 -- 创建教师表
-create table teacher (
-    no varchar(20) primary key,
-    name varchar(20) not null,
-    sex varchar(10) not null,
-    birthday date,
-    profession varchar(20) not null, -- 职称
-    department varchar(20) not null -- 部门
+CREATE TABLE teacher (
+    no VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    sex VARCHAR(10) NOT NULL,
+    birthday DATE,
+    profession VARCHAR(20) NOT NULL, -- 职称
+    department VARCHAR(20) NOT NULL -- 部门
 );
 
 -- 创建课程表
-create table course (
-    no varchar(20) primary key,
-    name varchar(20) not null,
-    t_no varchar(20) not null, -- 教师编号
+CREATE TABLE course (
+    no VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    t_no VARCHAR(20) NOT NULL, -- 教师编号
     -- 表示该 tno 来自于 teacher 表中的 no 字段值
-    foreign key(t_no) REFERENCES teacher(no) 
+    FOREIGN KEY(t_no) REFERENCES teacher(no) 
 );
 
 -- 成绩表
-create table score (
-    s_no varchar(20) not null, -- 学生编号
-    c_no varchar(20) not null, -- 课程号
+CREATE TABLE score (
+    s_no VARCHAR(20) NOT NULL, -- 学生编号
+    c_no VARCHAR(20) NOT NULL, -- 课程号
     degree DECIMAL,	-- 成绩
     -- 表示该 s_no, c_no 分别来自于 student, course 表中的 no 字段值
-    foreign key(s_no) REFERENCES student(no),	
-    foreign key(c_no) REFERENCES course(no),
+    FOREIGN KEY(s_no) REFERENCES student(no),	
+    FOREIGN KEY(c_no) REFERENCES course(no),
     -- 设置 s_no, c_no 为联合主键
-    primary key(s_no, c_no)
+    PRIMARY KEY(s_no, c_no)
 );
 
 -- 查看所有表
-SHOW tableS;
+SHOW TABLES;
 
 -- 添加学生表数据
-insert into student values('101', '曾华', '男', '1977-09-01', '95033');
-insert into student values('102', '匡明', '男', '1975-10-02', '95031');
-insert into student values('103', '王丽', '女', '1976-01-23', '95033');
-insert into student values('104', '李军', '男', '1976-02-20', '95033');
-insert into student values('105', '王芳', '女', '1975-02-10', '95031');
-insert into student values('106', '陆军', '男', '1974-06-03', '95031');
-insert into student values('107', '王尼玛', '男', '1976-02-20', '95033');
-insert into student values('108', '张全蛋', '男', '1975-02-10', '95031');
-insert into student values('109', '赵铁柱', '男', '1974-06-03', '95031');
+INSERT INTO student VALUES('101', '曾华', '男', '1977-09-01', '95033');
+INSERT INTO student VALUES('102', '匡明', '男', '1975-10-02', '95031');
+INSERT INTO student VALUES('103', '王丽', '女', '1976-01-23', '95033');
+INSERT INTO student VALUES('104', '李军', '男', '1976-02-20', '95033');
+INSERT INTO student VALUES('105', '王芳', '女', '1975-02-10', '95031');
+INSERT INTO student VALUES('106', '陆军', '男', '1974-06-03', '95031');
+INSERT INTO student VALUES('107', '王尼玛', '男', '1976-02-20', '95033');
+INSERT INTO student VALUES('108', '张全蛋', '男', '1975-02-10', '95031');
+INSERT INTO student VALUES('109', '赵铁柱', '男', '1974-06-03', '95031');
 
 -- 添加教师表数据
-insert into teacher values('804', '李诚', '男', '1958-12-02', '副教授', '计算机系');
-insert into teacher values('856', '张旭', '男', '1969-03-12', '讲师', '电子工程系');
-insert into teacher values('825', '王萍', '女', '1972-05-05', '助教', '计算机系');
-insert into teacher values('831', '刘冰', '女', '1977-08-14', '助教', '电子工程系');
+INSERT INTO teacher VALUES('804', '李诚', '男', '1958-12-02', '副教授', '计算机系');
+INSERT INTO teacher VALUES('856', '张旭', '男', '1969-03-12', '讲师', '电子工程系');
+INSERT INTO teacher VALUES('825', '王萍', '女', '1972-05-05', '助教', '计算机系');
+INSERT INTO teacher VALUES('831', '刘冰', '女', '1977-08-14', '助教', '电子工程系');
 
 -- 添加课程表数据
-insert into course values('3-105', '计算机导论', '825');
-insert into course values('3-245', '操作系统', '804');
-insert into course values('6-166', '数字电路', '856');
-insert into course values('9-888', '高等数学', '831');
+INSERT INTO course VALUES('3-105', '计算机导论', '825');
+INSERT INTO course VALUES('3-245', '操作系统', '804');
+INSERT INTO course VALUES('6-166', '数字电路', '856');
+INSERT INTO course VALUES('9-888', '高等数学', '831');
 
 -- 添加添加成绩表数据
-insert into score values('103', '3-105', '92');
-insert into score values('103', '3-245', '86');
-insert into score values('103', '6-166', '85');
-insert into score values('105', '3-105', '88');
-insert into score values('105', '3-245', '75');
-insert into score values('105', '6-166', '79');
-insert into score values('109', '3-105', '76');
-insert into score values('109', '3-245', '68');
-insert into score values('109', '6-166', '81');
+INSERT INTO score VALUES('103', '3-105', '92');
+INSERT INTO score VALUES('103', '3-245', '86');
+INSERT INTO score VALUES('103', '6-166', '85');
+INSERT INTO score VALUES('105', '3-105', '88');
+INSERT INTO score VALUES('105', '3-245', '75');
+INSERT INTO score VALUES('105', '6-166', '79');
+INSERT INTO score VALUES('109', '3-105', '76');
+INSERT INTO score VALUES('109', '3-245', '68');
+INSERT INTO score VALUES('109', '6-166', '81');
 
 -- 查看表结构
-select * from course;
-select * from score;
-select * from student;
-select * from teacher;
+SELECT * FROM course;
+SELECT * FROM score;
+SELECT * FROM student;
+SELECT * FROM teacher;
 ```
 
 ### 1 到 10
 
 ```mysql
 -- 查询 student 表的所有行
-select * from student;
+SELECT * FROM student;
 
 -- 查询 student 表中的 name、sex 和 class 字段的所有行
-select name, sex, class from student;
+SELECT name, sex, class FROM student;
 
 -- 查询 teacher 表中不重复的 department 列
 -- department: 去重查询
-select DISTinCT department from teacher;
+SELECT DISTINCT department FROM teacher;
 
 -- 查询 score 表中成绩在60-80之间的所有行（区间查询和运算符查询）
--- between xx and xx: 查询区间, and 表示 "并且"
-select * from score where degree between 60 and 80;
-select * from score where degree > 60 and degree < 80;
+-- BETWEEN xx AND xx: 查询区间, AND 表示 "并且"
+SELECT * FROM score WHERE degree BETWEEN 60 AND 80;
+SELECT * FROM score WHERE degree > 60 AND degree < 80;
 
 -- 查询 score 表中成绩为 85, 86 或 88 的行
--- in: 查询规定中的多个值
-select * from score where degree in (85, 86, 88);
+-- IN: 查询规定中的多个值
+SELECT * FROM score WHERE degree IN (85, 86, 88);
 
 -- 查询 student 表中 '95031' 班或性别为 '女' 的所有行
 -- or: 表示或者关系
-select * from student where class = '95031' or sex = '女';
+SELECT * FROM student WHERE class = '95031' or sex = '女';
 
 -- 以 class 降序的方式查询 student 表的所有行
 -- DESC: 降序，从高到低
 -- ASC（默认）: 升序，从低到高
-select * from student ORDER BY class DESC;
-select * from student ORDER BY class ASC;
+SELECT * FROM student ORDER BY class DESC;
+SELECT * FROM student ORDER BY class ASC;
 
 -- 以 c_no 升序、degree 降序查询 score 表的所有行
-select * from score ORDER BY c_no ASC, degree DESC;
+SELECT * FROM score ORDER BY c_no ASC, degree DESC;
 
 -- 查询 "95031" 班的学生人数
--- count: 统计
-select count(*) from student where class = '95031';
+-- COUNT: 统计
+SELECT COUNT(*) FROM student WHERE class = '95031';
 
 -- 查询 score 表中的最高分的学生学号和课程编号（子查询或排序查询）。
--- (select max(degree) from score): 子查询，算出最高分
-select s_no, c_no from score where degree = (select max(degree) from score);
+-- (SELECT MAX(degree) FROM score): 子查询，算出最高分
+SELECT s_no, c_no FROM score WHERE degree = (SELECT MAX(degree) FROM score);
 
 --  排序查询
 -- LIMIT r, n: 表示从第r行开始，查询n条数据
-select s_no, c_no, degree from score ORDER BY degree DESC LIMIT 0, 1;
+SELECT s_no, c_no, degree FROM score ORDER BY degree DESC LIMIT 0, 1;
 ```
 
 ### 分组计算平均成绩
@@ -415,13 +421,13 @@ select s_no, c_no, degree from score ORDER BY degree DESC LIMIT 0, 1;
 **查询每门课的平均成绩。**
 
 ```mysql
--- avg: 平均值
-select avg(degree) from score where c_no = '3-105';
-select avg(degree) from score where c_no = '3-245';
-select avg(degree) from score where c_no = '6-166';
+-- AVG: 平均值
+SELECT AVG(degree) FROM score WHERE c_no = '3-105';
+SELECT AVG(degree) FROM score WHERE c_no = '3-245';
+SELECT AVG(degree) FROM score WHERE c_no = '6-166';
 
--- group by: 分组查询
-select c_no, avg(degree) from score group by c_no;
+-- GROUP BY: 分组查询
+SELECT c_no, AVG(degree) FROM score GROUP BY c_no;
 ```
 
 ### 分组条件与模糊查询
@@ -429,7 +435,7 @@ select c_no, avg(degree) from score group by c_no;
 **查询 `score` 表中至少有 2 名学生选修，并以 3 开头的课程的平均分数。**
 
 ```mysql
-select * from score;
+SELECT * FROM score;
 -- c_no 课程编号
 +------+-------+--------+
 | s_no | c_no  | degree |
@@ -449,10 +455,10 @@ select * from score;
 分析表发现，至少有 2 名学生选修的课程是 `3-105` 、`3-245` 、`6-166` ，以 3 开头的课程是 `3-105` 、`3-245` 。也就是说，我们要查询所有 `3-105` 和 `3-245` 的 `degree` 平均分。
 
 ```mysql
--- 首先把 c_no, avg(degree) 通过分组查询出来
-select c_no, avg(degree) from score group by c_no
+-- 首先把 c_no, AVG(degree) 通过分组查询出来
+SELECT c_no, AVG(degree) FROM score GROUP BY c_no
 +-------+-------------+
-| c_no  | avg(degree) |
+| c_no  | AVG(degree) |
 +-------+-------------+
 | 3-105 |     85.3333 |
 | 3-245 |     76.3333 |
@@ -460,19 +466,19 @@ select c_no, avg(degree) from score group by c_no
 +-------+-------------+
 
 -- 再查询出至少有 2 名学生选修的课程
--- having: 表示持有
-having count(c_no) >= 2
+-- HAVING: 表示持有
+HAVING COUNT(c_no) >= 2
 
 -- 并且是以 3 开头的课程
--- like 表示模糊查询，"%" 是一个通配符，匹配 "3" 后面的任意字符。
-and c_no like '3%';
+-- LIKE 表示模糊查询，"%" 是一个通配符，匹配 "3" 后面的任意字符。
+AND c_no LIKE '3%';
 
 -- 把前面的SQL语句拼接起来，
--- 后面加上一个 count(*)，表示将每个分组的个数也查询出来。
-select c_no, avg(degree), count(*) from score group by c_no
-having count(c_no) >= 2 and c_no like '3%';
+-- 后面加上一个 COUNT(*)，表示将每个分组的个数也查询出来。
+SELECT c_no, AVG(degree), COUNT(*) FROM score GROUP BY c_no
+HAVING COUNT(c_no) >= 2 AND c_no LIKE '3%';
 +-------+-------------+----------+
-| c_no  | avg(degree) | count(*) |
+| c_no  | AVG(degree) | COUNT(*) |
 +-------+-------------+----------+
 | 3-105 |     85.3333 |        3 |
 | 3-245 |     76.3333 |        3 |
@@ -484,7 +490,7 @@ having count(c_no) >= 2 and c_no like '3%';
 **查询所有学生的 `name`，以及该学生在 `score` 表中对应的 `c_no` 和 `degree` 。**
 
 ```mysql
-select no, name from student;
+SELECT no, name FROM student;
 +-----+-----------+
 | no  | name      |
 +-----+-----------+
@@ -499,7 +505,7 @@ select no, name from student;
 | 109 | 赵铁柱    |
 +-----+-----------+
 
-select s_no, c_no, degree from score;
+SELECT s_no, c_no, degree FROM score;
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -518,10 +524,10 @@ select s_no, c_no, degree from score;
 通过分析可以发现，只要把 `score` 表中的 `s_no` 字段值替换成 `student` 表中对应的 `name` 字段值就可以了，如何做呢？
 
 ```mysql
--- from...: 表示从 student, score 表中查询
--- where 的条件表示为，只有在 student.no 和 score.s_no 相等时才显示出来。
-select name, c_no, degree from student, score 
-where student.no = score.s_no;
+-- FROM...: 表示从 student, score 表中查询
+-- WHERE 的条件表示为，只有在 student.no 和 score.s_no 相等时才显示出来。
+SELECT name, c_no, degree FROM student, score 
+WHERE student.no = score.s_no;
 +-----------+-------+--------+
 | name      | c_no  | degree |
 +-----------+-------+--------+
@@ -544,7 +550,7 @@ where student.no = score.s_no;
 只有 `score` 关联学生的 `no` ，因此只要查询 `score` 表，就能找出所有和学生相关的 `no` 和 `degree` ：
 
 ```mysql
-select s_no, c_no, degree from score;
+SELECT s_no, c_no, degree FROM score;
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -578,8 +584,8 @@ select s_no, c_no, degree from score;
 ```mysql
 -- 增加一个查询字段 name，分别从 score、course 这两个表中查询。
 -- as 表示取一个该字段的别名。
-select s_no, name as c_name, degree from score, course
-where score.c_no = course.no;
+SELECT s_no, name as c_name, degree FROM score, course
+WHERE score.c_no = course.no;
 +------+-----------------+--------+
 | s_no | c_name          | degree |
 +------+-----------------+--------+
@@ -602,7 +608,7 @@ where score.c_no = course.no;
 只有 `score` 表中关联学生的学号和课堂号，我们只要围绕着 `score` 这张表查询就好了。
 
 ```mysql
-select * from score;
+SELECT * FROM score;
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -623,7 +629,7 @@ select * from score;
 首先把 `s_no` 替换成 `student` 表中的 `name` 字段：
 
 ```mysql
-select name, c_no, degree from student, score where student.no = score.s_no;
+SELECT name, c_no, degree FROM student, score WHERE student.no = score.s_no;
 +-----------+-------+--------+
 | name      | c_no  | degree |
 +-----------+-------+--------+
@@ -643,7 +649,7 @@ select name, c_no, degree from student, score where student.no = score.s_no;
 
 ```mysql
 -- 课程表
-select no, name from course;
+SELECT no, name FROM course;
 +-------+-----------------+
 | no    | name            |
 +-------+-----------------+
@@ -654,10 +660,10 @@ select no, name from course;
 +-------+-----------------+
 
 -- 由于字段名存在重复，使用 "表名.字段名 as 别名" 代替。
-select student.name as s_name, course.name as c_name, degree 
-from student, score, course
-where student.no = score.s_no
-and score.c_no = course.no;
+SELECT student.name as s_name, course.name as c_name, degree 
+FROM student, score, course
+WHERE student.NO = score.s_no
+AND score.c_no = course.no;
 ```
 
 ### 子查询加分组求平均分
@@ -667,9 +673,9 @@ and score.c_no = course.no;
 在 `score` 表中根据 `student`  表的学生编号筛选出学生的课堂号和成绩：
 
 ```mysql
--- in (..): 将筛选出的学生号当做 s_no 的条件查询
-select s_no, c_no, degree from score
-where s_no in (select no from student where class = '95031');
+-- IN (..): 将筛选出的学生号当做 s_no 的条件查询
+SELECT s_no, c_no, degree FROM score
+WHERE s_no IN (SELECT no FROM student WHERE class = '95031');
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -685,11 +691,11 @@ where s_no in (select no from student where class = '95031');
 这时只要将 `c_no` 分组一下就能得出 `95031` 班学生每门课的平均成绩：
 
 ```mysql
-select c_no, avg(degree) from score
-where s_no in (select no from student where class = '95031')
-group by c_no;
+SELECT c_no, AVG(degree) FROM score
+WHERE s_no IN (SELECT no FROM student WHERE class = '95031')
+GROUP BY c_no;
 +-------+-------------+
-| c_no  | avg(degree) |
+| c_no  | AVG(degree) |
 +-------+-------------+
 | 3-105 |     82.0000 |
 | 3-245 |     71.5000 |
@@ -704,9 +710,9 @@ group by c_no;
 首先筛选出课堂号为 `3-105` ，在找出所有成绩高于 `109` 号同学的的行。
 
 ```mysql
-select * from score 
-where c_no = '3-105'
-and degree > (select degree from score where s_no = '109' and c_no = '3-105');
+SELECT * FROM score 
+WHERE c_no = '3-105'
+AND degree > (SELECT degree FROM score WHERE s_no = '109' AND c_no = '3-105');
 ```
 
 ### 子查询 - 2
@@ -715,18 +721,18 @@ and degree > (select degree from score where s_no = '109' and c_no = '3-105');
 
 ```mysql
 -- 不限制课程号，只要成绩大于109号同学的3-105课程成绩就可以。
-select * from score
-where degree > (select degree from score where s_no = '109' and c_no = '3-105');
+SELECT * FROM score
+WHERE degree > (SELECT degree FROM score WHERE s_no = '109' AND c_no = '3-105');
 ```
 
-### year 函数与带 in 关键字查询
+### YEAR 函数与带 IN 关键字查询
 
 **查询所有和 `101` 、`108` 号学生同年出生的 `no` 、`name` 、`birthday` 列。**
 
 ```mysql
--- year(..): 取出日期中的年份
-select no, name, birthday from student
-where year(birthday) in (select year(birthday) from student where no in (101, 108));
+-- YEAR(..): 取出日期中的年份
+SELECT no, name, birthday FROM student
+WHERE YEAR(birthday) IN (SELECT YEAR(birthday) FROM student WHERE no IN (101, 108));
 ```
 
 ### 多层嵌套子查询
@@ -736,21 +742,21 @@ where year(birthday) in (select year(birthday) from student where no in (101, 10
 首先找到教师编号：
 
 ```mysql
-select no from teacher where NAME = '张旭'
+SELECT NO FROM teacher WHERE NAME = '张旭'
 ```
 
 通过 `sourse` 表找到该教师课程号：
 
 ```mysql
-select no from course where t_no = ( select no from teacher where NAME = '张旭' );
+SELECT NO FROM course WHERE t_no = ( SELECT NO FROM teacher WHERE NAME = '张旭' );
 ```
 
 通过筛选出的课程号查询成绩表：
 
 ```mysql
-select * from score where c_no = (
-    select no from course where t_no = ( 
-        select no from teacher where NAME = '张旭' 
+SELECT * FROM score WHERE c_no = (
+    SELECT no FROM course WHERE t_no = ( 
+        SELECT no FROM teacher WHERE NAME = '张旭' 
     )
 );
 ```
@@ -763,7 +769,7 @@ select * from score where c_no = (
 
 ```mysql
 -- 查询 teacher 表
-select no, name from teacher;
+SELECT no, name FROM teacher;
 +-----+--------+
 | no  | name   |
 +-----+--------+
@@ -773,7 +779,7 @@ select no, name from teacher;
 | 856 | 张旭   |
 +-----+--------+
 
-select name from teacher where no in (
+SELECT name FROM teacher WHERE no IN (
     -- 在这里找到对应的条件
 );
 ```
@@ -781,7 +787,7 @@ select name from teacher where no in (
 查看和教师编号有有关的表的信息：
 
 ```mysql
-select * from course;
+SELECT * FROM course;
 -- t_no: 教师编号
 +-------+-----------------+------+
 | no    | name            | t_no |
@@ -797,12 +803,12 @@ select * from course;
 
 ```mysql
 -- 在此之前向 score 插入一些数据，以便丰富查询条件。
-insert into score values ('101', '3-105', '90');
-insert into score values ('102', '3-105', '91');
-insert into score values ('104', '3-105', '89');
+INSERT INTO score VALUES ('101', '3-105', '90');
+INSERT INTO score VALUES ('102', '3-105', '91');
+INSERT INTO score VALUES ('104', '3-105', '89');
 
 -- 查询 score 表
-select * from score;
+SELECT * FROM score;
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -821,7 +827,7 @@ select * from score;
 +------+-------+--------+
 
 -- 在 score 表中将 c_no 作为分组，并且限制 c_no 持有至少 5 条数据。
-select c_no from score group by c_no having count(*) > 5;
+SELECT c_no FROM score GROUP BY c_no HAVING COUNT(*) > 5;
 +-------+
 | c_no  |
 +-------+
@@ -832,8 +838,8 @@ select c_no from score group by c_no having count(*) > 5;
 根据筛选出来的课程号，找出在某课程中，拥有至少5名学员的教师编号：
 
 ```mysql
-select t_no from course where no in (
-    select c_no from score group by c_no having count(*) > 5
+SELECT t_no FROM course WHERE no IN (
+    SELECT c_no FROM score GROUP BY c_no HAVING COUNT(*) > 5
 );
 +------+
 | t_no |
@@ -845,10 +851,10 @@ select t_no from course where no in (
 在 `teacher` 表中，根据筛选出来的教师编号找到教师姓名：
 
 ```mysql
-select name from teacher where no in (
+SELECT name FROM teacher WHERE no IN (
     -- 最终条件
-    select t_no from course where no in (
-        select c_no from score group by c_no having count(*) > 5
+    SELECT t_no FROM course WHERE no IN (
+        SELECT c_no FROM score GROUP BY c_no HAVING COUNT(*) > 5
     )
 );
 ```
@@ -861,7 +867,7 @@ select name from teacher where no in (
 
 ```mysql
 -- 通过 teacher 表查询所有 `计算机系` 的教师编号
-select no, name, department from teacher where department = '计算机系'
+SELECT no, name, department FROM teacher WHERE department = '计算机系'
 +-----+--------+--------------+
 | no  | name   | department   |
 +-----+--------+--------------+
@@ -870,8 +876,8 @@ select no, name, department from teacher where department = '计算机系'
 +-----+--------+--------------+
 
 -- 通过 course 表查询该教师的课程编号
-select no from course where t_no in (
-    select no from teacher where department = '计算机系'
+SELECT no FROM course WHERE t_no IN (
+    SELECT no FROM teacher WHERE department = '计算机系'
 );
 +-------+
 | no    |
@@ -881,9 +887,9 @@ select no from course where t_no in (
 +-------+
 
 -- 根据筛选出来的课程号查询成绩表
-select * from score where c_no in (
-    select no from course where t_no in (
-        select no from teacher where department = '计算机系'
+SELECT * FROM score WHERE c_no IN (
+    SELECT no FROM course WHERE t_no IN (
+        SELECT no FROM teacher WHERE department = '计算机系'
     )
 );
 +------+-------+--------+
@@ -901,19 +907,19 @@ select * from score where c_no in (
 +------+-------+--------+
 ```
 
-### union 和 notin 的使用
+### UNION 和 NOTIN 的使用
 
 **查询 `计算机系` 与 `电子工程系` 中的不同职称的教师。**
 
 ```mysql
--- not: 代表逻辑非
-select * from teacher where department = '计算机系' and profession not in (
-    select profession from teacher where department = '电子工程系'
+-- NOT: 代表逻辑非
+SELECT * FROM teacher WHERE department = '计算机系' AND profession NOT IN (
+    SELECT profession FROM teacher WHERE department = '电子工程系'
 )
 -- 合并两个集
-union
-select * from teacher where department = '电子工程系' and profession not in (
-    select profession from teacher where department = '计算机系'
+UNION
+SELECT * FROM teacher WHERE department = '电子工程系' AND profession NOT IN (
+    SELECT profession FROM teacher WHERE department = '计算机系'
 );
 ```
 
@@ -922,7 +928,7 @@ select * from teacher where department = '电子工程系' and profession not in
 **查询课程 `3-105` 且成绩 <u>至少</u> 高于 `3-245` 的 `score` 表。**
 
 ```mysql
-select * from score where c_no = '3-105';
+SELECT * FROM score WHERE c_no = '3-105';
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -934,7 +940,7 @@ select * from score where c_no = '3-105';
 | 109  | 3-105 |     76 |
 +------+-------+--------+
 
-select * from score where c_no = '3-245';
+SELECT * FROM score WHERE c_no = '3-245';
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -946,8 +952,8 @@ select * from score where c_no = '3-245';
 -- ANY: 符合SQL语句中的任意条件。
 -- 也就是说，在 3-105 成绩中，只要有一个大于从 3-245 筛选出来的任意行就符合条件，
 -- 最后根据降序查询结果。
-select * from score where c_no = '3-105' and degree > ANY(
-    select degree from score where c_no = '3-245'
+SELECT * FROM score WHERE c_no = '3-105' AND degree > ANY(
+    SELECT degree FROM score WHERE c_no = '3-245'
 ) ORDER BY degree DESC;
 +------+-------+--------+
 | s_no | c_no  | degree |
@@ -969,8 +975,8 @@ select * from score where c_no = '3-105' and degree > ANY(
 -- 只需对上一道题稍作修改。
 -- ALL: 符合SQL语句中的所有条件。
 -- 也就是说，在 3-105 每一行成绩中，都要大于从 3-245 筛选出来全部行才算符合条件。
-select * from score where c_no = '3-105' and degree > ALL(
-    select degree from score where c_no = '3-245'
+SELECT * FROM score WHERE c_no = '3-105' AND degree > ALL(
+    SELECT degree FROM score WHERE c_no = '3-245'
 );
 +------+-------+--------+
 | s_no | c_no  | degree |
@@ -989,9 +995,9 @@ select * from score where c_no = '3-105' and degree > ALL(
 
 ```mysql
 -- 查询平均分
-select c_no, avg(degree) from score group by c_no;
+SELECT c_no, AVG(degree) FROM score GROUP BY c_no;
 +-------+-------------+
-| c_no  | avg(degree) |
+| c_no  | AVG(degree) |
 +-------+-------------+
 | 3-105 |     87.6667 |
 | 3-245 |     76.3333 |
@@ -999,7 +1005,7 @@ select c_no, avg(degree) from score group by c_no;
 +-------+-------------+
 
 -- 查询 score 表
-select degree from score;
+SELECT degree FROM score;
 +--------+
 | degree |
 +--------+
@@ -1020,8 +1026,8 @@ select degree from score;
 -- 将表 b 作用于表 a 中查询数据
 -- score a (b): 将表声明为 a (b)，
 -- 如此就能用 a.c_no = b.c_no 作为条件执行查询了。
-select * from score a where degree < (
-    (select avg(degree) from score b where a.c_no = b.c_no)
+SELECT * FROM score a WHERE degree < (
+    (SELECT AVG(degree) FROM score b WHERE a.c_no = b.c_no)
 );
 +------+-------+--------+
 | s_no | c_no  | degree |
@@ -1039,7 +1045,7 @@ select * from score a where degree < (
 **查询所有任课 ( 在 `course` 表里有课程 ) 教师的 `name` 和 `department`** 。
 
 ```mysql
-select name, department from teacher where no in (select t_no from course);
+SELECT name, department FROM teacher WHERE no IN (SELECT t_no FROM course);
 +--------+-----------------+
 | name   | department      |
 +--------+-----------------+
@@ -1056,7 +1062,7 @@ select name, department from teacher where no in (select t_no from course);
 
 ```mysql
 -- 查看学生表信息
-select * from student;
+SELECT * FROM student;
 +-----+-----------+-----+------------+-------+
 | no  | name      | sex | birthday   | class |
 +-----+-----------+-----+------------+-------+
@@ -1073,7 +1079,7 @@ select * from student;
 +-----+-----------+-----+------------+-------+
 
 -- 只查询性别为男，然后按 class 分组，并限制 class 行大于 1。
-select class from student where sex = '男' group by class having count(*) > 1;
+SELECT class FROM student WHERE sex = '男' GROUP BY class HAVING COUNT(*) > 1;
 +-------+
 | class |
 +-------+
@@ -1082,14 +1088,14 @@ select class from student where sex = '男' group by class having count(*) > 1;
 +-------+
 ```
 
-### notlike 模糊查询取反
+### NOTLIKE 模糊查询取反
 
 **查询 `student` 表中不姓 "王" 的同学记录。**
 
 ```mysql
--- not: 取反
--- like: 模糊查询
-mysql> select * from student where name not like '王%';
+-- NOT: 取反
+-- LIKE: 模糊查询
+mysql> SELECT * FROM student WHERE name NOT LIKE '王%';
 +-----+-----------+-----+------------+-------+
 | no  | name      | sex | birthday   | class |
 +-----+-----------+-----+------------+-------+
@@ -1103,13 +1109,13 @@ mysql> select * from student where name not like '王%';
 +-----+-----------+-----+------------+-------+
 ```
 
-### year 与 now 函数
+### YEAR 与 NOW 函数
 
 **查询 `student` 表中每个学生的姓名和年龄。**
 
 ```mysql
--- 使用函数 year(now()) 计算出当前年份，减去出生年份后得出年龄。
-select name, year(now()) - year(birthday) as age from student;
+-- 使用函数 YEAR(NOW()) 计算出当前年份，减去出生年份后得出年龄。
+SELECT name, YEAR(NOW()) - YEAR(birthday) as age FROM student;
 +-----------+------+
 | name      | age  |
 +-----------+------+
@@ -1126,14 +1132,14 @@ select name, year(now()) - year(birthday) as age from student;
 +-----------+------+
 ```
 
-### max 与 min 函数
+### MAX 与 MIN 函数
 
 **查询 `student` 表中最大和最小的 `birthday` 值。**
 
 ```mysql
-select max(birthday), min(birthday) from student;
+SELECT MAX(birthday), MIN(birthday) FROM student;
 +---------------+---------------+
-| max(birthday) | min(birthday) |
+| MAX(birthday) | MIN(birthday) |
 +---------------+---------------+
 | 1977-09-01    | 1974-06-03    |
 +---------------+---------------+
@@ -1144,7 +1150,7 @@ select max(birthday), min(birthday) from student;
 **以 `class` 和 `birthday` 从大到小的顺序查询 `student` 表。**
 
 ```mysql
-select * from student ORDER BY class DESC, birthday;
+SELECT * FROM student ORDER BY class DESC, birthday;
 +-----+-----------+-----+------------+-------+
 | no  | name      | sex | birthday   | class |
 +-----+-----------+-----+------------+-------+
@@ -1166,7 +1172,7 @@ select * from student ORDER BY class DESC, birthday;
 **查询 "男" 教师及其所上的课程。**
 
 ```mysql
-select * from course where t_no in (select no from teacher where sex = '男');
+SELECT * FROM course WHERE t_no in (SELECT no FROM teacher WHERE sex = '男');
 +-------+--------------+------+
 | no    | name         | t_no |
 +-------+--------------+------+
@@ -1175,17 +1181,17 @@ select * from course where t_no in (select no from teacher where sex = '男');
 +-------+--------------+------+
 ```
 
-### max 函数与子查询
+### MAX 函数与子查询
 
 **查询最高分同学的 `score` 表。**
 
 ```mysql
 -- 找出最高成绩（该查询只能有一个结果）
-select max(degree) from score;
+SELECT MAX(degree) FROM score;
 
 -- 根据上面的条件筛选出所有最高成绩表，
 -- 该查询可能有多个结果，假设 degree 值多次符合条件。
-select * from score where degree = (select max(degree) from score);
+SELECT * FROM score WHERE degree = (SELECT MAX(degree) FROM score);
 +------+-------+--------+
 | s_no | c_no  | degree |
 +------+-------+--------+
@@ -1199,7 +1205,7 @@ select * from score where degree = (select max(degree) from score);
 
 ```mysql
 -- 首先将李军的性别作为条件取出来
-select sex from student where name = '李军';
+SELECT sex FROM student WHERE name = '李军';
 +-----+
 | sex |
 +-----+
@@ -1207,8 +1213,8 @@ select sex from student where name = '李军';
 +-----+
 
 -- 根据性别查询 name 和 sex
-select name, sex from student where sex = (
-    select sex from student where name = '李军'
+SELECT name, sex FROM student WHERE sex = (
+    SELECT sex FROM student WHERE name = '李军'
 );
 +-----------+-----+
 | name      | sex |
@@ -1229,10 +1235,10 @@ select name, sex from student where sex = (
 **查询和 "李军" 同性别且同班的同学 `name` 。**
 
 ```mysql
-select name, sex, class from student where sex = (
-    select sex from student where name = '李军'
-) and class = (
-    select class from student where name = '李军'
+SELECT name, sex, class FROM student WHERE sex = (
+    SELECT sex FROM student WHERE name = '李军'
+) AND class = (
+    SELECT class FROM student WHERE name = '李军'
 );
 +-----------+-----+-------+
 | name      | sex | class |
@@ -1250,10 +1256,10 @@ select name, sex, class from student where sex = (
 需要的 "计算机导论" 和性别为 "男" 的编号可以在 `course` 和 `student` 表中找到。
 
 ```mysql
-select * from score where c_no = (
-    select no from course where name = '计算机导论'
-) and s_no in (
-    select no from student where sex = '男'
+SELECT * FROM score WHERE c_no = (
+    SELECT no FROM course WHERE name = '计算机导论'
+) AND s_no IN (
+    SELECT no FROM student WHERE sex = '男'
 );
 +------+-------+--------+
 | s_no | c_no  | degree |
@@ -1270,19 +1276,19 @@ select * from score where c_no = (
 建立一个 `grade` 表代表学生的成绩等级，并插入数据：
 
 ```mysql
-create table grade (
-    low int(3),
-    upp int(3),
+CREATE TABLE grade (
+    low INT(3),
+    upp INT(3),
     grade char(1)
 );
 
-insert into grade values (90, 100, 'A');
-insert into grade values (80, 89, 'B');
-insert into grade values (70, 79, 'C');
-insert into grade values (60, 69, 'D');
-insert into grade values (0, 59, 'E');
+INSERT INTO grade VALUES (90, 100, 'A');
+INSERT INTO grade VALUES (80, 89, 'B');
+INSERT INTO grade VALUES (70, 79, 'C');
+INSERT INTO grade VALUES (60, 69, 'D');
+INSERT INTO grade VALUES (0, 59, 'E');
 
-select * from grade;
+SELECT * FROM grade;
 +------+------+-------+
 | low  | upp  | grade |
 +------+------+-------+
@@ -1296,11 +1302,11 @@ select * from grade;
 
 **查询所有学生的 `s_no` 、`c_no` 和 `grade` 列。**
 
-思路是，使用区间 ( `between` ) 查询，判断学生的成绩 ( `degree` )  在 `grade` 表的 `low` 和 `upp` 之间。
+思路是，使用区间 ( `BETWEEN` ) 查询，判断学生的成绩 ( `degree` )  在 `grade` 表的 `low` 和 `upp` 之间。
 
 ```mysql
-select s_no, c_no, grade from score, grade 
-where degree between low and upp;
+SELECT s_no, c_no, grade FROM score, grade 
+WHERE degree BETWEEN low AND upp;
 +------+-------+-------+
 | s_no | c_no  | grade |
 +------+-------+-------+
@@ -1324,21 +1330,21 @@ where degree between low and upp;
 准备用于测试连接查询的数据：
 
 ```mysql
-create database testjoin;
+CREATE DATABASE testJoin;
 
-create table person (
-    id int,
-    name varchar(20),
-    cardId int
+CREATE TABLE person (
+    id INT,
+    name VARCHAR(20),
+    cardId INT
 );
 
-create table card (
-    id int,
-    name varchar(20)
+CREATE TABLE card (
+    id INT,
+    name VARCHAR(20)
 );
 
-insert into card values (1, '饭卡'), (2, '建行卡'), (3, '农行卡'), (4, '工商卡'), (5, '邮政卡');
-select * from card;
+INSERT INTO card VALUES (1, '饭卡'), (2, '建行卡'), (3, '农行卡'), (4, '工商卡'), (5, '邮政卡');
+SELECT * FROM card;
 +------+-----------+
 | id   | name      |
 +------+-----------+
@@ -1349,8 +1355,8 @@ select * from card;
 |    5 | 邮政卡    |
 +------+-----------+
 
-insert into person values (1, '张三', 1), (2, '李四', 3), (3, '王五', 6);
-select * from person;
+INSERT INTO person VALUES (1, '张三', 1), (2, '李四', 3), (3, '王五', 6);
+SELECT * FROM person;
 +------+--------+--------+
 | id   | name   | cardId |
 +------+--------+--------+
@@ -1364,12 +1370,12 @@ select * from person;
 
 #### 内连接
 
-要查询这两张表中有关系的数据，可以使用 `inner join` ( 内连接 ) 将它们连接在一起。
+要查询这两张表中有关系的数据，可以使用 `INNER JOIN` ( 内连接 ) 将它们连接在一起。
 
 ```mysql
--- inner join: 表示为内连接，将两张表拼接在一起。
+-- INNER JOIN: 表示为内连接，将两张表拼接在一起。
 -- on: 表示要执行某个条件。
-select * from person inner join card on person.cardId = card.id;
+SELECT * FROM person INNER JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 | id   | name   | cardId | id   | name      |
 +------+--------+--------+------+-----------+
@@ -1377,8 +1383,8 @@ select * from person inner join card on person.cardId = card.id;
 |    2 | 李四   |      3 |    3 | 农行卡    |
 +------+--------+--------+------+-----------+
 
--- 将 inner 关键字省略掉，结果也是一样的。
--- select * from person join card on person.cardId = card.id;
+-- 将 INNER 关键字省略掉，结果也是一样的。
+-- SELECT * FROM person JOIN card on person.cardId = card.id;
 ```
 
 > 注意：`card` 的整张表被连接到了右边。
@@ -1388,8 +1394,8 @@ select * from person inner join card on person.cardId = card.id;
 完整显示左边的表 ( `person` ) ，右边的表如果符合条件就显示，不符合则补 `NULL` 。
 
 ```mysql
--- left join 也叫做 left outer join，用这两种方式的查询结果是一样的。
-select * from person left join card on person.cardId = card.id;
+-- LEFT JOIN 也叫做 LEFT OUTER JOIN，用这两种方式的查询结果是一样的。
+SELECT * FROM person LEFT JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 | id   | name   | cardId | id   | name      |
 +------+--------+--------+------+-----------+
@@ -1404,7 +1410,7 @@ select * from person left join card on person.cardId = card.id;
 完整显示右边的表 ( `card` ) ，左边的表如果符合条件就显示，不符合则补 `NULL` 。
 
 ```mysql
-select * from person RIGHT join card on person.cardId = card.id;
+SELECT * FROM person RIGHT JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 | id   | name   | cardId | id   | name      |
 +------+--------+--------+------+-----------+
@@ -1421,15 +1427,15 @@ select * from person RIGHT join card on person.cardId = card.id;
 完整显示两张表的全部数据。
 
 ```mysql
--- mysql 不支持这种语法的全外连接
--- select * from person full join card on person.cardId = card.id;
+-- MySQL 不支持这种语法的全外连接
+-- SELECT * FROM person FULL JOIN card on person.cardId = card.id;
 -- 出现错误：
 -- ERROR 1054 (42S22): Unknown column 'person.cardId' in 'on clause'
 
--- mysql全连接语法，使用 union 将两张表合并在一起。
-select * from person left join card on person.cardId = card.id
-union
-select * from person RIGHT join card on person.cardId = card.id;
+-- MySQL全连接语法，使用 UNION 将两张表合并在一起。
+SELECT * FROM person LEFT JOIN card on person.cardId = card.id
+UNION
+SELECT * FROM person RIGHT JOIN card on person.cardId = card.id;
 +------+--------+--------+------+-----------+
 | id   | name   | cardId | id   | name      |
 +------+--------+--------+------+-----------+
@@ -1444,16 +1450,16 @@ select * from person RIGHT join card on person.cardId = card.id;
 
 ## 事务
 
-在 mysql 中，事务其实是一个最小的不可分割的工作单元。事务能够**保证一个业务的完整性**。
+在 MySQL 中，事务其实是一个最小的不可分割的工作单元。事务能够**保证一个业务的完整性**。
 
 比如我们的银行转账：
 
 ```mysql
 -- a -> -100
-update user set money = money - 100 where name = 'a';
+UPDATE user set money = money - 100 WHERE name = 'a';
 
 -- b -> +100
-update user set money = money + 100 where name = 'b';
+UPDATE user set money = money + 100 WHERE name = 'b';
 ```
 
 在实际项目中，假设只有一条 SQL 语句执行成功，而另外一条执行失败了，就会出现数据前后不一致。
@@ -1462,11 +1468,11 @@ update user set money = money + 100 where name = 'b';
 
 ### 如何控制事务 - COMMIT / ROLLBACK
 
-在 mysql 中，事务的**自动提交**状态默认是开启的。
+在 MySQL 中，事务的**自动提交**状态默认是开启的。
 
 ```mysql
 -- 查询事务的自动提交状态
-select @@AUTOCOMMIT;
+SELECT @@AUTOCOMMIT;
 +--------------+
 | @@AUTOCOMMIT |
 +--------------+
@@ -1479,19 +1485,19 @@ select @@AUTOCOMMIT;
 什么是回滚？举个例子：
 
 ```mysql
-create database bank;
+CREATE DATABASE bank;
 
 USE bank;
 
-create table user (
-    id int primary key,
-    name varchar(20),
-    money int
+CREATE TABLE user (
+    id INT PRIMARY KEY,
+    name VARCHAR(20),
+    money INT
 );
 
-insert into user values (1, 'a', 1000);
+INSERT INTO user VALUES (1, 'a', 1000);
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1499,15 +1505,15 @@ select * from user;
 +----+------+-------+
 ```
 
-可以看到，在执行插入语句后数据立刻生效，原因是 mysql 中的事务自动将它**提交**到了数据库中。那么所谓**回滚**的意思就是，撤销执行过的所有 SQL 语句，使其回滚到**最后一次提交**数据时的状态。
+可以看到，在执行插入语句后数据立刻生效，原因是 MySQL 中的事务自动将它**提交**到了数据库中。那么所谓**回滚**的意思就是，撤销执行过的所有 SQL 语句，使其回滚到**最后一次提交**数据时的状态。
 
-在 mysql 中使用 `ROLLBACK` 执行回滚：
+在 MySQL 中使用 `ROLLBACK` 执行回滚：
 
 ```mysql
 -- 回滚到最后一次提交
 ROLLBACK;
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1519,10 +1525,10 @@ select * from user;
 
 ```mysql
 -- 关闭自动提交
-set AUTOCOMMIT = 0;
+SET AUTOCOMMIT = 0;
 
 -- 查询自动提交状态
-select @@AUTOCOMMIT;
+SELECT @@AUTOCOMMIT;
 +--------------+
 | @@AUTOCOMMIT |
 +--------------+
@@ -1533,11 +1539,11 @@ select @@AUTOCOMMIT;
 将自动提交关闭后，测试数据回滚：
 
 ```mysql
-insert into user values (2, 'b', 1000);
+INSERT INTO user VALUES (2, 'b', 1000);
 
 -- 关闭 AUTOCOMMIT 后，数据的变化是在一张虚拟的临时数据表中展示，
 -- 发生变化的数据并没有真正插入到数据表中。
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1556,7 +1562,7 @@ select * from user;
 ROLLBACK;
 
 -- 再次查询
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1567,7 +1573,7 @@ select * from user;
 那如何将虚拟的数据真正提交到数据库中？使用 `COMMIT` : 
 
 ```mysql
-insert into user values (2, 'b', 1000);
+INSERT INTO user VALUES (2, 'b', 1000);
 -- 手动提交数据（持久性），
 -- 将数据真正提交到数据库中，执行后不能再回滚提交过的数据。
 COMMIT;
@@ -1576,7 +1582,7 @@ COMMIT;
 ROLLBACK;
 
 -- 再次查询（回滚无效了）
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1589,9 +1595,9 @@ select * from user;
 >
 > 1. **自动提交**
 >
->    - 查看自动提交状态：`select @@AUTOCOMMIT` ；
+>    - 查看自动提交状态：`SELECT @@AUTOCOMMIT` ；
 >
->    - 设置自动提交状态：`set AUTOCOMMIT = 0` 。
+>    - 设置自动提交状态：`SET AUTOCOMMIT = 0` 。
 >
 > 2. **手动提交**
 >
@@ -1605,12 +1611,12 @@ select * from user;
 
 ```mysql
 -- 转账
-update user set money = money - 100 where name = 'a';
+UPDATE user set money = money - 100 WHERE name = 'a';
 
 -- 到账
-update user set money = money + 100 where name = 'b';
+UPDATE user set money = money + 100 WHERE name = 'b';
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1625,7 +1631,7 @@ select * from user;
 -- 假设转账发生了意外，需要回滚。
 ROLLBACK;
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1636,20 +1642,20 @@ select * from user;
 
 这时我们又回到了发生意外之前的状态，也就是说，事务给我们提供了一个可以反悔的机会。假设数据没有发生意外，这时可以手动将数据真正提交到数据表中：`COMMIT` 。
 
-### 手动开启事务 - BEGin / START TRANSACTION
+### 手动开启事务 - BEGIN / START TRANSACTION
 
 事务的默认提交被开启 ( `@@AUTOCOMMIT = 1` ) 后，此时就不能使用事务回滚了。但是我们还可以手动开启一个事务处理事件，使其可以发生回滚：
 
 ```mysql
--- 使用 BEGin 或者 START TRANSACTION 手动开启一个事务
+-- 使用 BEGIN 或者 START TRANSACTION 手动开启一个事务
 -- START TRANSACTION;
-BEGin;
-update user set money = money - 100 where name = 'a';
-update user set money = money + 100 where name = 'b';
+BEGIN;
+UPDATE user set money = money - 100 WHERE name = 'a';
+UPDATE user set money = money + 100 WHERE name = 'b';
 
 -- 由于手动开启的事务没有开启自动提交，
 -- 此时发生变化的数据仍然是被保存在一张临时表中。
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1660,7 +1666,7 @@ select * from user;
 -- 测试回滚
 ROLLBACK;
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1672,11 +1678,11 @@ select * from user;
 仍然使用 `COMMIT` 提交数据，提交后无法再发生本次事务的回滚。
 
 ```mysql
-BEGin;
-update user set money = money - 100 where name = 'a';
-update user set money = money + 100 where name = 'b';
+BEGIN;
+UPDATE user set money = money - 100 WHERE name = 'a';
+UPDATE user set money = money + 100 WHERE name = 'b';
 
-select * from user;
+SELECT * FROM user;
 +----+------+-------+
 | id | name | money |
 +----+------+-------+
@@ -1712,7 +1718,7 @@ ROLLBACK;
 
    只能读取到其他事务**已经提交的数据**。
 
-3. **REPEAtable READ ( 可被重复读 )**
+3. **REPEATABLE READ ( 可被重复读 )**
 
    如果有多个连接都开启了事务，那么事务之间不能共享数据记录，否则只能共享已提交的记录。
 
@@ -1723,28 +1729,28 @@ ROLLBACK;
 查看当前数据库的默认隔离级别：
 
 ```mysql
--- mysql 8.x, GLOBAL 表示系统级别，不加表示会话级别。
-select @@GLOBAL.TRANSACTION_ISOLATION;
-select @@TRANSACTION_ISOLATION;
+-- MySQL 8.x, GLOBAL 表示系统级别，不加表示会话级别。
+SELECT @@GLOBAL.TRANSACTION_ISOLATION;
+SELECT @@TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
 +--------------------------------+
-| REPEAtable-READ                | -- mysql的默认隔离级别，可以重复读。
+| REPEATABLE-READ                | -- MySQL的默认隔离级别，可以重复读。
 +--------------------------------+
 
--- mysql 5.x
-select @@GLOBAL.TX_ISOLATION;
-select @@TX_ISOLATION;
+-- MySQL 5.x
+SELECT @@GLOBAL.TX_ISOLATION;
+SELECT @@TX_ISOLATION;
 ```
 
 修改隔离级别：
 
 ```mysql
 -- 设置系统隔离级别，LEVEL 后面表示要设置的隔离级别 (READ UNCOMMITTED)。
-set GLOBAL TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET GLOBAL TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
 -- 查询系统隔离级别，发现已经被修改。
-select @@GLOBAL.TRANSACTION_ISOLATION;
+SELECT @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
 +--------------------------------+
@@ -1757,10 +1763,10 @@ select @@GLOBAL.TRANSACTION_ISOLATION;
 测试 **READ UNCOMMITTED ( 读取未提交 )** 的隔离性：
 
 ```mysql
-insert into user values (3, '小明', 1000);
-insert into user values (4, '淘宝店', 1000);
+INSERT INTO user VALUES (3, '小明', 1000);
+INSERT INTO user VALUES (4, '淘宝店', 1000);
 
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1773,11 +1779,11 @@ select * from user;
 -- 开启一个事务操作数据
 -- 假设小明在淘宝店买了一双800块钱的鞋子：
 START TRANSACTION;
-update user set money = money - 800 where name = '小明';
-update user set money = money + 800 where name = '淘宝店';
+UPDATE user SET money = money - 800 WHERE name = '小明';
+UPDATE user SET money = money + 800 WHERE name = '淘宝店';
 
 -- 然后淘宝店在另一方查询结果，发现钱已到账。
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1795,7 +1801,7 @@ select * from user;
 ROLLBACK;
 
 -- 此时无论对方是谁，如果再去查询结果就会发现：
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1813,8 +1819,8 @@ select * from user;
 把隔离级别设置为 **READ COMMITTED** ：
 
 ```mysql
-set GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;
-select @@GLOBAL.TRANSACTION_ISOLATION;
+SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;
+SELECT @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
 +--------------------------------+
@@ -1827,12 +1833,12 @@ select @@GLOBAL.TRANSACTION_ISOLATION;
 ```mysql
 -- 正在操作数据事务（当前事务）
 START TRANSACTION;
-update user set money = money - 800 where name = '小明';
-update user set money = money + 800 where name = '淘宝店';
+UPDATE user SET money = money - 800 WHERE name = '小明';
+UPDATE user SET money = money + 800 WHERE name = '淘宝店';
 
 -- 虽然隔离级别被设置为了 READ COMMITTED，但在当前事务中，
 -- 它看到的仍然是数据表中临时改变数据，而不是真正提交过的数据。
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1847,7 +1853,7 @@ select * from user;
 $ mysql -u root -p12345612
 
 -- 此时远程连接查询到的数据只能是已经提交过的
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1862,7 +1868,7 @@ select * from user;
 
 ```mysql
 -- 小张在查询数据的时候发现：
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1874,11 +1880,11 @@ select * from user;
 
 -- 在小张求表的 money 平均值之前，小王做了一个操作：
 START TRANSACTION;
-insert into user values (5, 'c', 100);
+INSERT INTO user VALUES (5, 'c', 100);
 COMMIT;
 
 -- 此时表的真实数据是：
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1890,9 +1896,9 @@ select * from user;
 +----+-----------+-------+
 
 -- 这时小张再求平均值的时候，就会出现计算不相符合的情况：
-select avg(money) from user;
+SELECT AVG(money) FROM user;
 +------------+
-| avg(money) |
+| AVG(money) |
 +------------+
 |  820.0000  |
 +------------+
@@ -1902,24 +1908,24 @@ select avg(money) from user;
 
 #### 幻读
 
-将隔离级别设置为 **REPEAtable READ ( 可被重复读取 )** :
+将隔离级别设置为 **REPEATABLE READ ( 可被重复读取 )** :
 
 ```mysql
-set GLOBAL TRANSACTION ISOLATION LEVEL REPEAtable READ;
-select @@GLOBAL.TRANSACTION_ISOLATION;
+SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
 +--------------------------------+
-| REPEAtable-READ                |
+| REPEATABLE-READ                |
 +--------------------------------+
 ```
 
-测试 **REPEAtable READ** ，假设在两个不同的连接上分别执行 `START TRANSACTION` :
+测试 **REPEATABLE READ** ，假设在两个不同的连接上分别执行 `START TRANSACTION` :
 
 ```sql
 -- 小张 - 成都
 START TRANSACTION;
-insert into user values (6, 'd', 1000);
+INSERT INTO user VALUES (6, 'd', 1000);
 
 -- 小王 - 北京
 START TRANSACTION;
@@ -1933,7 +1939,7 @@ COMMIT;
 无论小张是否执行过 `COMMIT` ，在小王这边，都不会查询到小张的事务记录，而是只会查询到自己所处事务的记录：
 
 ```sql
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1950,7 +1956,7 @@ select * from user;
 然而事实是，在真实的数据表中，小张已经插入了一条数据。但是小王此时并不知道，也插入了同一条数据，会发生什么呢？
 
 ```sql
-insert into user values (6, 'd', 1000);
+INSERT INTO user VALUES (6, 'd', 1000);
 -- ERROR 1062 (23000): Duplicate entry '6' for key 'PRIMARY'
 ```
 
@@ -1961,8 +1967,8 @@ insert into user values (6, 'd', 1000);
 顾名思义，就是所有事务的**写入操作**全都是串行化的。什么意思？把隔离级别修改成 **SERIALIZABLE** :
 
 ```mysql
-set GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-select @@GLOBAL.TRANSACTION_ISOLATION;
+SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT @@GLOBAL.TRANSACTION_ISOLATION;
 +--------------------------------+
 | @@GLOBAL.TRANSACTION_ISOLATION |
 +--------------------------------+
@@ -1980,7 +1986,7 @@ START TRANSACTION;
 START TRANSACTION;
 
 -- 开启事务之前先查询表，准备操作数据。
-select * from user;
+SELECT * FROM user;
 +----+-----------+-------+
 | id | name      | money |
 +----+-----------+-------+
@@ -1993,7 +1999,7 @@ select * from user;
 +----+-----------+-------+
 
 -- 发现没有 7 号王小花，于是插入一条数据：
-insert into user values (7, '王小花', 1000);
+INSERT INTO user VALUES (7, '王小花', 1000);
 ```
 
 此时会发生什么呢？由于现在的隔离级别是 **SERIALIZABLE ( 串行化 )** ，串行化的意思就是：假设把所有的事务都放在一个串行的队列中，那么所有的事务都会按照**固定顺序执行**，执行完一个事务后再继续执行下一个事务的**写入操作** ( **这意味着队列中同时只能执行一个事务的写入操作** ) 。
