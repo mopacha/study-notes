@@ -10,3 +10,9 @@ VMware-workstation-full-15.0.0-10134415
 
 
 Navicat Premium 12
+
+
+Termius
+
+
+Jiggler
